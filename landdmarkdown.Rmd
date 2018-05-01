@@ -1,0 +1,126 @@
+---
+title: "Data Analysis and Results"
+author: "Preethi Rajasekaran"
+date: "30 April 2018"
+output: 
+  pdf_document: 
+    fig_caption: yes
+    keep_tex: yes
+latex_engine: texlive
+params:
+  table_host: NA
+  table_parasite: NA
+  table_raw: NA
+  table_rawbackup: NA
+  table_species: NA
+  table_site: NA
+  table_subsite: NA
+  map: NA
+  map2: NA
+  nBreaks: 10
+  barColor: "white"
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache=TRUE)
+# library(ggplot2)
+# library(stargazer)
+```
+
+**Date:**
+`r Sys.Date()`
+
+#DATA AND STATISTICAL ANALYSIS
+
+```{r, echo=FALSE, out.width='80%',out.height='80%',fig.align='center'}
+knitr::include_graphics(params$map)
+```
+
+**Site Location Map**
+```{r, echo=FALSE, out.width='70%',out.height='70%',fig.align='center'}
+knitr::include_graphics(params$map2)
+```
+**Distribution of *D. falcata* in India**
+
+##DATA
+
+```{r, results='asis', echo=FALSE}
+stargazer::stargazer(params$table_host, type = "latex", title = "Table Host",summary = TRUE)
+```
+**Host Details**
+```{r, results='asis', echo=FALSE}
+stargazer::stargazer(params$table_parasite,type = "latex",title="Table Parasite",summary = TRUE)
+```
+**Parasite Details**
+```{r, results='asis', echo=FALSE,message=FALSE, warning=FALSE,strip.white=TRUE}
+stargazer::stargazer(params$table_subsite,type = "latex",title="Table Site",summary = TRUE)
+```
+**Site details**
+```{r, results='asis', echo=FALSE,message=FALSE, warning=FALSE,strip.white=TRUE}
+stargazer::stargazer(params$table_species,type = "latex",title="Table Species",summary = TRUE)
+```
+**Species on site**
+```{r, results='asis',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
+table<-read.table("/mnt/data/PU/R/lifeanddeath/sql/fisher2.txt",header=TRUE)
+attach(table)
+chisq.test(abundance_ratio,prevalence,simulate.p.value = TRUE, B = 10000)
+detach(table)
+```
+**Chi Square Abundance and Prevalence**
+```{r, results='markup',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
+table2<-read.table("/mnt/data/PU/R/lifeanddeath/sql/binomial_proportions.txt",header=TRUE)
+attach(table2)
+prop.test(infected_individuals,total_individuals,correct=100)
+cat("###All Hosts")
+detach(table2)
+
+tableac<-read.table("/mnt/data/PU/R/lifeanddeath/sql/acacia_proportions.txt",header=TRUE)
+attach(tableac)
+prop.test(infected_individuals,total_individuals,correct=100,conf.level = 0.95)
+cat("###Acacia auriculiformis and Acacia holosericea")
+detach(tableac)
+```
+**Proportions Test**
+```{r, results='asis',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
+table3<-read.csv(file = "/mnt/data/PU/R/lifeanddeath/sql/lmer_noquote.csv",header=TRUE,sep = ",")
+attach(table3)
+#my_model<-lmer(count_parasite ~ (1|gbh) + plot + host,REML = FALSE)
+my_model<-lmer(count_parasite ~ host*gbh+(1|plot),REML = FALSE)
+stargazer(my_model,cor=FALSE)
+cat("###LMER")
+
+ggplot(table3, aes(x = gbh, y = count_parasite)) +
+  geom_point() +
+  geom_smooth(method = "lm") 
+cat("Linear Model to test")
+
+plot(my_model,which=1)
+#plot(my_model,which=2)
+cat("Plot the residuals")
+
+qqnorm(resid(my_model))
+qqline(resid(my_model))
+cat("qqplot")
+
+boxplot(count_parasite ~ gbh, data = table3)
+cat("Box plot")
+
+ggplot(table3, aes(x = gbh, y = count_parasite, colour = host)) +
+  geom_point(size = 2) +
+  theme_classic() +
+    theme(legend.position = "none")
+cat("ggplot")
+
+detach(table3)
+```
+**A Linear Mixed Effects Model for intensity of infestation**
+
+## Plots
+```{r, params$table_host, tidy=TRUE,message=FALSE, warning=FALSE}
+#as.factor(params$table_host$gbh)
+p <- ggplot(params$table_host, aes(y=params$table_host$gbh, x=params$table_host$count_parasite,group=params$table_host$host))
+
+p + geom_boxplot() 
+```
+**Number of parasites on each host**
