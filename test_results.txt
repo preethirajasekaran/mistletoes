@@ -1,0 +1,458 @@
+> table<-read.table("sql/fisher2.txt",header=TRUE)
+> attach(table)
+> chisq.test(abundance_ratio,prevalence,simulate.p.value = TRUE, B = 1000)
+
+	Pearson's Chi-squared test with simulated p-value (based on 1000
+	replicates)
+
+data:  abundance_ratio and prevalence
+X-squared = 746.85, df = NA, p-value = 0.000999
+
+> chisq.test(abundance_ratio,prevalence,simulate.p.value = TRUE, B = 1000000)
+
+	Pearson's Chi-squared test with simulated p-value (based on 1e+06
+	replicates)
+
+data:  abundance_ratio and prevalence
+X-squared = 746.85, df = NA, p-value = 1e-05
+
+> detach(table)
+------------------------------------------------------------------------------------
+> table2<-read.table("sql/binomial_proportions.txt",header=TRUE)
+> attach(table2)
+> prop.test(infected_individuals,total_individuals,correct=100)
+
+	59-sample test for equality of proportions without continuity correction
+
+data:  infected_individuals out of total_individuals
+X-squared = 169.35, df = 58, p-value = 7.756e-13
+alternative hypothesis: two.sided
+sample estimates:
+    prop 1     prop 2     prop 3     prop 4     prop 5     prop 6     prop 7 
+0.36206897 0.44000000 0.30337079 0.12500000 0.00000000 0.00000000 0.00000000 
+    prop 8     prop 9    prop 10    prop 11    prop 12    prop 13    prop 14 
+0.37500000 0.00000000 0.00000000 0.33333333 0.00000000 0.00000000 0.00000000 
+   prop 15    prop 16    prop 17    prop 18    prop 19    prop 20    prop 21 
+0.30769231 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 1.00000000 
+   prop 22    prop 23    prop 24    prop 25    prop 26    prop 27    prop 28 
+0.38461538 0.00000000 0.00000000 0.00000000 0.00000000 0.04054054 0.00000000 
+   prop 29    prop 30    prop 31    prop 32    prop 33    prop 34    prop 35 
+0.00000000 0.40000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 
+   prop 36    prop 37    prop 38    prop 39    prop 40    prop 41    prop 42 
+0.26086957 0.00000000 0.00000000 0.66666667 0.00000000 0.00000000 0.00000000 
+   prop 43    prop 44    prop 45    prop 46    prop 47    prop 48    prop 49 
+0.00000000 0.02777778 0.00000000 0.04081633 1.00000000 0.00000000 0.00000000 
+   prop 50    prop 51    prop 52    prop 53    prop 54    prop 55    prop 56 
+0.04918033 0.00000000 0.00000000 0.00000000 0.10000000 0.09090909 0.00000000 
+   prop 57    prop 58    prop 59 
+0.00000000 0.00000000 0.10000000 
+
+Warning message:
+In prop.test(infected_individuals, total_individuals, correct = 100) :
+  Chi-squared approximation may be incorrect
+  
+------------------ACACIA 3 SP AND THEN 2 SP AURI AND HOLO-------------------------------------------------------
+> table3<-read.table("sql/acacia_proportions.txt",header=TRUE)
+> attach(table3)
+> prop.test(infected_individuals,total_individuals,correct=100)
+
+	3-sample test for equality of proportions without continuity correction
+
+data:  infected_individuals out of total_individuals
+X-squared = 8.9505, df = 2, p-value = 0.01139
+alternative hypothesis: two.sided
+sample estimates:
+   prop 1    prop 2    prop 3 
+0.3620690 0.3033708 0.1250000 
+
+> prop.test(infected_individuals,total_individuals,correct=100,conf.level = 0.95)
+
+	3-sample test for equality of proportions without continuity correction
+
+data:  infected_individuals out of total_individuals
+X-squared = 8.9505, df = 2, p-value = 0.01139
+alternative hypothesis: two.sided
+sample estimates:
+   prop 1    prop 2    prop 3 
+0.3620690 0.3033708 0.1250000 
+
+> detach(table3)
+> table3<-read.table("sql/acacia_proportions.txt",header=TRUE)
+> attach(table3)
+> prop.test(infected_individuals,total_individuals,correct=100,conf.level = 0.95)
+
+	2-sample test for equality of proportions with continuity correction
+
+data:  infected_individuals out of total_individuals
+X-squared = 0.31564, df = 1, p-value = 0.5742
+alternative hypothesis: two.sided
+95 percent confidence interval:
+ -0.1118088  0.2292051
+sample estimates:
+   prop 1    prop 2 
+0.3620690 0.3033708 
+--------LMER WITH INTERACTION host*gbh--------------------------------------------------------------------------
+> my_model<-lmer(count_parasite ~ host*gbh+(1|plot),REML = FALSE)
+fixed-effect model matrix is rank deficient so dropping 9 columns / coefficients
+> print(my_model,cor=FALSE)
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: count_parasite ~ host * gbh + (1 | plot)
+      AIC       BIC    logLik  deviance  df.resid 
+ 2746.180  3270.658 -1262.090  2524.180       722 
+Random effects:
+ Groups   Name        Std.Dev.
+ plot     (Intercept) 0.09757 
+ Residual             1.09737 
+Number of obs: 833, groups:  plot, 15
+Fixed Effects:
+                    (Intercept)               hostAcacia chundra  
+                      -2.278438                         2.044894  
+         hostAcacia holosericea               hostAcacia mangium  
+                       1.530969                         1.348782  
+       hostAdenanthera pavonina               hostAegle marmelos  
+                       2.322594                        -6.040699  
+              hostAlbizia amara              hostAlbizia lebbeck  
+                       2.339673                         1.901858  
+       hostAtalantia monophylla           hostAzadirachta indica  
+                       2.253599                         2.264295  
+    hostBarringtonia acutangala            hostBauhinia racemosa  
+                       2.679421                         2.256293  
+         hostBenkara malabarica         hostBorassus flabellifer  
+                       2.327270                         2.306868  
+            hostBridelia retusa             hostButea monosperma  
+                       1.648737                         2.279349  
+    hostCanthium coromandelicum             hostCarissa spinarum  
+                       2.322950                         0.008156  
+             hostCarmona retusa               hostCassia fistula  
+                       2.399880                         2.239467  
+              hostCassia siamea      hostCasuarina equisetifolia  
+                      -1.776691                         2.519936  
+      hostChloroxylon swietenia        hostCleistanthus collinus  
+                       2.223555                         2.338990  
+    hostCochlospermum religiosa            hostDiospyros montana  
+                       2.268690                         2.273343  
+      hostDodonaea angustifolia        hostDolichandrone falcata  
+                       2.102031                         2.256907  
+     hostErythroxylum monogynum           hostFicus benghalensis  
+                       2.273283                         5.993249  
+            hostFicus religiosa            hostFlacourtia indica  
+                      -0.246791                         2.285482  
+          hostGliricidia sepium              hostGmelina arborea  
+                       2.219291                         2.373978  
+          hostGuazuma ulmifolia            hostHardwickia binata  
+                       2.213130                         2.775721  
+             hostHelictes isora                hostIxora pavetta  
+                       0.610841                         2.291873  
+         hostKhaya senegalensis          hostLivistona chinensis  
+                       2.830021                       -29.171322  
+         hostMadhuca longifolia             hostMangifera indica  
+                       2.283550                         2.361695  
+         hostManilkara hexandra         hostMemecylon umbellatum  
+                       2.283711                         2.292487  
+            hostMimusops elengi               hostMorinda coreia  
+                       2.196488                         2.306995  
+    hostPeltophorum pterocarpum             hostPongamia pinnata  
+                      -2.146092                         0.523904  
+      hostPterocarpus marsupium       hostPterocarpus santalinus  
+                       2.279813                         2.365694  
+     hostPterospermum canescens                    hostRandia sp  
+                       2.301667                        -2.117226  
+             hostSyzgium cumini              hostTectona grandis  
+                       2.314653                         2.833612  
+          hostTerminalia arjuna         hostTerminalia bellerica  
+                       2.567685                         2.293942  
+         hostTerminalia catappa           hostWalsura trifoliata  
+                       2.294839                         2.278205  
+          hostZiziphus oenoplia                              gbh  
+                       2.547518                         0.169965  
+         hostAcacia chundra:gbh       hostAcacia holosericea:gbh  
+                      -0.113881                        -0.045115  
+         hostAcacia mangium:gbh     hostAdenanthera pavonina:gbh  
+                      -0.065877                        -0.171693  
+          hostAlbizia amara:gbh          hostAlbizia lebbeck:gbh  
+                      -0.169965                        -0.118671  
+   hostAtalantia monophylla:gbh       hostAzadirachta indica:gbh  
+                      -0.169965                        -0.169590  
+hostBarringtonia acutangala:gbh        hostBauhinia racemosa:gbh  
+                      -0.171372                        -0.170409  
+     hostBenkara malabarica:gbh     hostBorassus flabellifer:gbh  
+                      -0.172052                        -0.169965  
+        hostBridelia retusa:gbh         hostButea monosperma:gbh  
+                      -0.110463                        -0.170025  
+hostCanthium coromandelicum:gbh           hostCarmona retusa:gbh  
+                      -0.172391                        -0.173434  
+         hostCassia fistula:gbh  hostCasuarina equisetifolia:gbh  
+                      -0.169561                        -0.148533  
+  hostChloroxylon swietenia:gbh    hostCleistanthus collinus:gbh  
+                      -0.169965                        -0.172949  
+hostCochlospermum religiosa:gbh        hostDiospyros montana:gbh  
+                      -0.170757                        -0.171902  
+  hostDodonaea angustifolia:gbh    hostDolichandrone falcata:gbh  
+                      -0.149624                        -0.169508  
+ hostErythroxylum monogynum:gbh       hostFicus benghalensis:gbh  
+                      -0.172363                        -0.172057  
+      hostFlacourtia indica:gbh        hostGliricidia sepium:gbh  
+                      -0.170831                        -0.164000  
+        hostGmelina arborea:gbh        hostGuazuma ulmifolia:gbh  
+                      -0.179656                        -0.167592  
+      hostHardwickia binata:gbh            hostIxora pavetta:gbh  
+                      -0.168548                        -0.171590  
+     hostKhaya senegalensis:gbh       hostMadhuca longifolia:gbh  
+                      -0.154180                        -0.170664  
+       hostMangifera indica:gbh       hostManilkara hexandra:gbh  
+                      -0.171132                        -0.170720  
+   hostMemecylon umbellatum:gbh          hostMimusops elengi:gbh  
+                      -0.170516                        -0.169965  
+         hostMorinda coreia:gbh    hostPterocarpus marsupium:gbh  
+                      -0.168267                        -0.170425  
+ hostPterocarpus santalinus:gbh   hostPterospermum canescens:gbh  
+                      -0.170542                        -0.172191  
+         hostSyzgium cumini:gbh          hostTectona grandis:gbh  
+                      -0.170596                        -0.182759  
+      hostTerminalia arjuna:gbh     hostTerminalia bellerica:gbh  
+                      -0.174254                        -0.171517  
+     hostTerminalia catappa:gbh       hostWalsura trifoliata:gbh  
+                      -0.170922                        -0.170810  
+      hostZiziphus oenoplia:gbh  
+                      -0.172895  
+fit warnings:
+fixed-effect model matrix is rank deficient so dropping 9 columns / coefficients
+
+> levels(host)
+ [1] "Acacia auriculiformis"   "Acacia chundra"          "Acacia holosericea"     
+ [4] "Acacia mangium"          "Adenanthera pavonina"    "Aegle marmelos"         
+ [7] "Albizia amara"           "Albizia lebbeck"         "Atalantia monophylla"   
+[10] "Azadirachta indica"      "Barringtonia acutangala" "Bauhinia racemosa"      
+[13] "Benkara malabarica"      "Borassus flabellifer"    "Bridelia retusa"        
+[16] "Butea monosperma"        "Canthium coromandelicum" "Carissa spinarum"       
+[19] "Carmona retusa"          "Cassia fistula"          "Cassia siamea"          
+[22] "Casuarina equisetifolia" "Chloroxylon swietenia"   "Cleistanthus collinus"  
+[25] "Cochlospermum religiosa" "Diospyros montana"       "Dodonaea angustifolia"  
+[28] "Dolichandrone falcata"   "Erythroxylum monogynum"  "Ficus benghalensis"     
+[31] "Ficus religiosa"         "Flacourtia indica"       "Gliricidia sepium"      
+[34] "Gmelina arborea"         "Guazuma ulmifolia"       "Hardwickia binata"      
+[37] "Helictes isora"          "Ixora pavetta"           "Khaya senegalensis"     
+[40] "Livistona chinensis"     "Madhuca longifolia"      "Mangifera indica"       
+[43] "Manilkara hexandra"      "Memecylon umbellatum"    "Mimusops elengi"        
+[46] "Morinda coreia"          "Peltophorum pterocarpum" "Pongamia pinnata"       
+[49] "Pterocarpus marsupium"   "Pterocarpus santalinus"  "Pterospermum canescens" 
+[52] "Randia sp"               "Syzgium cumini"          "Tectona grandis"        
+[55] "Terminalia arjuna"       "Terminalia bellerica"    "Terminalia catappa"     
+[58] "Walsura trifoliata"      "Ziziphus oenoplia"
+---------------------------------------------------------------------------------
+LMER WITHOUT INTERACTION TERM
+
+> my_model<-lmer(count_parasite ~ host+gbh+(1|plot),REML = FALSE)
+> print(my_model,cor=FALSE)
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: count_parasite ~ host + gbh + (1 | plot)
+      AIC       BIC    logLik  deviance  df.resid 
+ 2865.710  3158.662 -1370.855  2741.710       771 
+Random effects:
+ Groups   Name        Std.Dev.
+ plot     (Intercept) 0.1573  
+ Residual             1.2474  
+Number of obs: 833, groups:  plot, 15
+Fixed Effects:
+                (Intercept)           hostAcacia chundra  
+                    1.11774                      0.07310  
+     hostAcacia holosericea           hostAcacia mangium  
+                   -0.37317                     -0.69527  
+   hostAdenanthera pavonina           hostAegle marmelos  
+                   -1.18902                     -1.33468  
+          hostAlbizia amara          hostAlbizia lebbeck  
+                   -1.12570                     -0.25583  
+   hostAtalantia monophylla       hostAzadirachta indica  
+                   -1.27980                     -1.17676  
+hostBarringtonia acutangala        hostBauhinia racemosa  
+                   -1.03761                     -1.32870  
+     hostBenkara malabarica     hostBorassus flabellifer  
+                   -1.12165                     -1.27361  
+        hostBridelia retusa         hostButea monosperma  
+                   -0.50372                     -1.42507  
+hostCanthium coromandelicum         hostCarissa spinarum  
+                   -1.09374                     -1.19562  
+         hostCarmona retusa           hostCassia fistula  
+                   -1.04092                     -1.23848  
+          hostCassia siamea  hostCasuarina equisetifolia  
+                   -0.23760                     -0.04101  
+  hostChloroxylon swietenia    hostCleistanthus collinus  
+                   -1.40676                     -1.21605  
+hostCochlospermum religiosa        hostDiospyros montana  
+                   -1.29957                     -1.30057  
+  hostDodonaea angustifolia    hostDolichandrone falcata  
+                   -1.05915                     -1.22679  
+ hostErythroxylum monogynum       hostFicus benghalensis  
+                   -1.25706                      1.95637  
+        hostFicus religiosa        hostFlacourtia indica  
+                   -1.19883                     -1.22179  
+      hostGliricidia sepium          hostGmelina arborea  
+                   -1.02380                     -1.17925  
+      hostGuazuma ulmifolia        hostHardwickia binata  
+                   -1.19859                     -0.65098  
+         hostHelictes isora            hostIxora pavetta  
+                   -1.09708                     -1.18009  
+     hostKhaya senegalensis      hostLivistona chinensis  
+                   -0.28766                     -1.52899  
+     hostMadhuca longifolia         hostMangifera indica  
+                   -1.20277                     -1.10065  
+     hostManilkara hexandra     hostMemecylon umbellatum  
+                   -1.19541                     -1.16641  
+        hostMimusops elengi           hostMorinda coreia  
+                   -1.22045                     -1.08434  
+hostPeltophorum pterocarpum         hostPongamia pinnata  
+                   -0.27292                     -1.39682  
+  hostPterocarpus marsupium   hostPterocarpus santalinus  
+                   -1.26029                     -1.09101  
+ hostPterospermum canescens                hostRandia sp  
+                   -1.33446                     -1.22929  
+         hostSyzgium cumini          hostTectona grandis  
+                   -1.20511                     -1.10989  
+      hostTerminalia arjuna     hostTerminalia bellerica  
+                   -1.04823                     -1.17860  
+     hostTerminalia catappa       hostWalsura trifoliata  
+                   -1.17086                     -1.21363  
+      hostZiziphus oenoplia                          gbh  
+                   -0.98314                      0.00214  
+                   
+                   
+================================
+bcPower(count_parasite, 0, gamma=4)
+> boxcox(bcPower(count_parasite, 0, gamma=4) ~ host+gbh)
+
+x<-plot:host
+> y<-plot:host:factor(gbh)
+> my_model<-lmer(bcPower(count_parasite, 0, gamma=4) ~ host+gbh+(1|x)+(1|y),REML = FALSE)
+> summary(my_model)
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: bcPower(count_parasite, 0, gamma = 4) ~ host + gbh + (1 | x) +      (1 | y)
+
+     AIC      BIC   logLik deviance df.resid 
+  -417.2   -119.5    271.6   -543.2      770 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.7162 -0.3397 -0.0479  0.0099  8.1893 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ y        (Intercept) 0.000000 0.00000 
+ x        (Intercept) 0.001262 0.03552 
+ Residual             0.029363 0.17136 
+Number of obs: 833, groups:  y, 823; x, 275
+
+Fixed effects:
+                              Estimate Std. Error t value
+(Intercept)                  1.5735129  0.0255496  61.587
+hostAcacia chundra           0.0064012  0.0495589   0.129
+hostAcacia holosericea      -0.0500884  0.0336839  -1.487
+hostAcacia mangium          -0.1364523  0.0374547  -3.643
+hostAdenanthera pavonina    -0.1990576  0.0635217  -3.134
+hostAegle marmelos          -0.2031296  0.1768843  -1.148
+hostAlbizia amara           -0.1954936  0.1287799  -1.518
+hostAlbizia lebbeck         -0.0144910  0.0515936  -0.281
+hostAtalantia monophylla    -0.1947697  0.1287780  -1.512
+hostAzadirachta indica      -0.1939075  0.0479809  -4.041
+hostBarringtonia acutangala -0.1342738  0.1083917  -1.239
+hostBauhinia racemosa       -0.1982352  0.0632317  -3.135
+hostBenkara malabarica      -0.1908221  0.0857848  -2.224
+hostBorassus flabellifer    -0.2263440  0.1298823  -1.743
+hostBridelia retusa         -0.0684160  0.0367809  -1.860
+hostButea monosperma        -0.2326239  0.0685044  -3.396
+hostCanthium coromandelicum -0.1908332  0.0936099  -2.039
+hostCarissa spinarum        -0.1914571  0.1768239  -1.083
+hostCarmona retusa          -0.1911661  0.0928124  -2.060
+hostCassia fistula          -0.1925007  0.0647808  -2.972
+hostCassia siamea            0.0263849  0.1768254   0.149
+hostCasuarina equisetifolia  0.0019278  0.0607654   0.032
+hostChloroxylon swietenia   -0.1919935  0.1287812  -1.491
+hostCleistanthus collinus   -0.1956289  0.0910903  -2.148
+hostCochlospermum religiosa -0.2004447  0.0615548  -3.256
+hostDiospyros montana       -0.1965728  0.0919406  -2.138
+hostDodonaea angustifolia   -0.1797952  0.0344818  -5.214
+hostDolichandrone falcata   -0.1954054  0.0580237  -3.368
+hostErythroxylum monogynum  -0.1920396  0.1041617  -1.844
+hostFicus benghalensis       0.1906240  0.0853184   2.234
+hostFicus religiosa         -0.1919462  0.1768222  -1.086
+hostFlacourtia indica       -0.1924504  0.0722293  -2.664
+hostGliricidia sepium       -0.1928823  0.0846587  -2.278
+hostGmelina arborea         -0.1913805  0.1263113  -1.515
+hostGuazuma ulmifolia       -0.1948258  0.0822536  -2.369
+hostHardwickia binata       -0.0827783  0.0481004  -1.721
+hostHelictes isora          -0.1904203  0.1768287  -1.077
+hostIxora pavetta           -0.1945756  0.0828495  -2.349
+hostKhaya senegalensis       0.0135688  0.1081245   0.125
+hostLivistona chinensis     -0.2475370  0.1790162  -1.383
+hostMadhuca longifolia      -0.1966378  0.0597031  -3.294
+hostMangifera indica        -0.1973634  0.1263170  -1.562
+hostManilkara hexandra      -0.1946689  0.0415044  -4.690
+hostMemecylon umbellatum    -0.1872620  0.0400763  -4.673
+hostMimusops elengi         -0.1941470  0.1287773  -1.508
+hostMorinda coreia          -0.1818317  0.0366646  -4.959
+hostPeltophorum pterocarpum  0.0256415  0.1768290   0.145
+hostPongamia pinnata        -0.1904790  0.1768284  -1.077
+hostPterocarpus marsupium   -0.1992007  0.1263342  -1.577
+hostPterocarpus santalinus  -0.1879882  0.0372504  -5.047
+hostPterospermum canescens  -0.1957616  0.1054807  -1.856
+hostRandia sp               -0.1954936  0.1768211  -1.106
+hostSyzgium cumini          -0.2008042  0.0506412  -3.965
+hostTectona grandis         -0.1560689  0.0622372  -2.508
+hostTerminalia arjuna       -0.1645029  0.0603727  -2.725
+hostTerminalia bellerica    -0.1952382  0.0846596  -2.306
+hostTerminalia catappa      -0.1954070  0.0719002  -2.718
+hostWalsura trifoliata      -0.1941350  0.0539652  -3.597
+hostZiziphus oenoplia       -0.1543798  0.0614612  -2.512
+gbh                          0.0003260  0.0001701   1.917
+
+> plot(bcPower(count_parasite, 0, gamma=4)~host,subset=(host=="Acacia auriculiformis"))
+library(lattice)
+> ggCaterpillar <- function(re, QQ=TRUE, likeDotplot=TRUE, reorder=TRUE) {
++     require(ggplot2)
++     f <- function(x) {
++         pv   <- attr(x, "postVar")
++         cols <- 1:(dim(pv)[1])
++         se   <- unlist(lapply(cols, function(i) sqrt(pv[i, i, ])))
++         if (reorder) {
++             ord  <- unlist(lapply(x, order)) + rep((0:(ncol(x) - 1)) * nrow(x), each=nrow(x))
++             pDf  <- data.frame(y=unlist(x)[ord],
++                                ci=1.96*se[ord],
++                                nQQ=rep(qnorm(ppoints(nrow(x))), ncol(x)),
++                                ID=factor(rep(rownames(x), ncol(x))[ord], levels=rownames(x)[ord]),
++                                ind=gl(ncol(x), nrow(x), labels=names(x)))
++         } else {
++             pDf  <- data.frame(y=unlist(x),
++                                ci=1.96*se,
++                                nQQ=rep(qnorm(ppoints(nrow(x))), ncol(x)),
++                                ID=factor(rep(rownames(x), ncol(x)), levels=rownames(x)),
++                                ind=gl(ncol(x), nrow(x), labels=names(x)))
++         }
++         
++         if(QQ) {  ## normal QQ-plot
++             p <- ggplot(pDf, aes(nQQ, y))
++             p <- p + facet_wrap(~ ind, scales="free")
++             p <- p + xlab("Standard normal quantiles") + ylab("Random effect quantiles")
++         } else {  ## caterpillar dotplot
++             p <- ggplot(pDf, aes(ID, y)) + coord_flip()
++             if(likeDotplot) {  ## imitate dotplot() -> same scales for random effects
++                 p <- p + facet_wrap(~ ind)
++             } else {           ## different scales for random effects
++                 p <- p + facet_grid(ind ~ ., scales="free_y")
++             }
++             p <- p + xlab("Levels") + ylab("Random effects")
++         }
++         
++         p <- p + theme(legend.position="none")
++         p <- p + geom_hline(yintercept=0)
++         p <- p + geom_errorbar(aes(ymin=y-ci, ymax=y+ci), width=0, colour="black")
++         p <- p + geom_point(aes(size=1.2), colour="blue") 
++         return(p)
++     }
++     
++     lapply(re, f)
++ }
+
+> ggCaterpillar(ranef(my_model,condVar=TRUE), QQ=FALSE, likeDotplot=TRUE, reorder=FALSE)
+
+> qqmath(ranef(my_model, condVar = TRUE), strip = FALSE)
+> dotplot(ranef(my_model, postVar=TRUE))
+

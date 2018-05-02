@@ -36,8 +36,9 @@ knitr::opts_chunk$set(cache=TRUE)
 ```{r, echo=FALSE, out.width='80%',out.height='80%',fig.align='center'}
 knitr::include_graphics(params$map)
 ```
-
 **Site Location Map**
+
+
 ```{r, echo=FALSE, out.width='70%',out.height='70%',fig.align='center'}
 knitr::include_graphics(params$map2)
 ```
@@ -49,18 +50,26 @@ knitr::include_graphics(params$map2)
 stargazer::stargazer(params$table_host, type = "latex", title = "Table Host",summary = TRUE)
 ```
 **Host Details**
+
+
 ```{r, results='asis', echo=FALSE}
 stargazer::stargazer(params$table_parasite,type = "latex",title="Table Parasite",summary = TRUE)
 ```
 **Parasite Details**
+
+
 ```{r, results='asis', echo=FALSE,message=FALSE, warning=FALSE,strip.white=TRUE}
 stargazer::stargazer(params$table_subsite,type = "latex",title="Table Site",summary = TRUE)
 ```
 **Site details**
+
+
 ```{r, results='asis', echo=FALSE,message=FALSE, warning=FALSE,strip.white=TRUE}
 stargazer::stargazer(params$table_species,type = "latex",title="Table Species",summary = TRUE)
 ```
 **Species on site**
+
+
 ```{r, results='asis',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
 table<-read.table("/mnt/data/PU/R/lifeanddeath/sql/fisher2.txt",header=TRUE)
 attach(table)
@@ -68,6 +77,8 @@ chisq.test(abundance_ratio,prevalence,simulate.p.value = TRUE, B = 10000)
 detach(table)
 ```
 **Chi Square Abundance and Prevalence**
+
+
 ```{r, results='markup',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
 table2<-read.table("/mnt/data/PU/R/lifeanddeath/sql/binomial_proportions.txt",header=TRUE)
 attach(table2)
@@ -82,12 +93,20 @@ cat("###Acacia auriculiformis and Acacia holosericea")
 detach(tableac)
 ```
 **Proportions Test**
+
 ```{r, results='asis',message=FALSE, warning=FALSE,highlight=TRUE,strip.white=TRUE,tidy=TRUE}
 table3<-read.csv(file = "/mnt/data/PU/R/lifeanddeath/sql/lmer_noquote.csv",header=TRUE,sep = ",")
 attach(table3)
+ls.str(table3)
+#Not this
 #my_model<-lmer(count_parasite ~ (1|gbh) + plot + host,REML = FALSE)
+#This
 my_model<-lmer(count_parasite ~ host*gbh+(1|plot),REML = FALSE)
 stargazer(my_model,cor=FALSE)
+
+#ARM display
+display(my_model)
+coefplot(my_model)
 cat("###LMER")
 
 ggplot(table3, aes(x = gbh, y = count_parasite)) +
@@ -115,6 +134,7 @@ cat("ggplot")
 detach(table3)
 ```
 **A Linear Mixed Effects Model for intensity of infestation**
+
 
 ## Plots
 ```{r, params$table_host, tidy=TRUE,message=FALSE, warning=FALSE}

@@ -25,8 +25,12 @@ library(tinytex)
 #For analysis
 library(lme4)
 library(formatR)
+# library(sjPlot) # to visualise model outputs
+# library(MCMCglmm) # for models
+# library(MCMCvis) # to visualise model outputs
+# library(brms) # for models
 # library(stats)
-# library(arm)
+library(arm)
 library(Matrix)
 library(stargazer)
 library(car)
